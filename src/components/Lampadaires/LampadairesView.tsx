@@ -4,11 +4,12 @@ import { supabase, Lampadaire } from '../../lib/supabase';
 import { LampadaireCard } from './LampadaireCard';
 import { Lightbulb, Search } from 'lucide-react';
 
+// Exportation nommée correcte pour App.tsx
 export function LampadairesView() {
   const [searchTerm, setSearchTerm] = useState('');
   const queryClient = useQueryClient();
 
-  // Récupération des données
+  // 1. Récupération des données avec React Query
   const { data: lampadaires = [], isLoading } = useQuery<Lampadaire[]>({
     queryKey: ['lampadaires'],
     queryFn: async () => {
@@ -21,7 +22,7 @@ export function LampadairesView() {
     },
   });
 
-  // Abonnement Realtime pour mettre à jour les données automatiquement
+  // 2. Abonnement Realtime pour la mise à jour automatique
   useEffect(() => {
     const channel = supabase
       .channel('lampadaires-changes')
@@ -69,25 +70,8 @@ export function LampadairesView() {
             placeholder="Rechercher un lampadaire..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <p className="text-gray-400">
-          {filteredLampadaires.length} lampadaire{filteredLampadaires.length > 1 ? 's' : ''} trouvé{filteredLampadaires.length > 1 ? 's' : ''}
-        </p>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm">
-            {lampadaires.filter((l) => l.etat_actuel === 'actif').length} actifs
-          </span>
-          <span className="px-3 py-1 bg-orange-500/10 text-orange-400 rounded-full text-sm">
-            {lampadaires.filter((l) => l.etat_actuel === 'veille').length} en veille
-          </span>
-          <span className="px-3 py-1 bg-red-500/10 text-red-400 rounded-full text-sm">
-            {lampadaires.filter((l) => l.etat_actuel === 'panne').length} en panne
-          </span>
         </div>
       </div>
 
